@@ -1,24 +1,54 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+import React, { useState } from "react";
+import "./App.css"; // この行はCSSファイルをインポートしています
 
-function App() {
+const Tabs = ({ children }) => {
+  const [activeTab, setActiveTab] = useState(children[0].props.label);
+
+  const onClickTabItem = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
-    <Tabs defaultCSS={false}>
-      <TabList>
-        <Tab>Racten Fashion</Tab>
-        <Tab>LUXURY</Tab>
-      </TabList>
+    <div>
+      <ul className="tab-list">
+        {children.map((child) => {
+          const { label } = child.props;
 
-      <TabPanel>
-        <h2>Any content 1</h2>
-      </TabPanel>
-      <TabPanel>
-        <h2>Any content 2</h2>
-      </TabPanel>
-    </Tabs>
+          return (
+            <li
+              className={
+                label === activeTab ? "tab-list-item active" : "tab-list-item"
+              }
+              onClick={() => onClickTabItem(label)}
+              key={label}
+            >
+              {label}
+            </li>
+          );
+        })}
+      </ul>
+      <div className="tab-content">
+        {children.map((child) => {
+          if (child.props.label !== activeTab) return undefined;
+          return child.props.children;
+        })}
+      </div>
+    </div>
+  );
+};
+
+const Tab = ({ label, children }) => {
+  return <div>{children}</div>;
+};
+
+export default function App() {
+  return (
+    <div>
+      <Tabs>
+        <Tab label="Tab 1">Content of Tab 1</Tab>
+        <Tab label="Tab 2">Content of Tab 2</Tab>
+        <Tab label="Tab 3">Content of Tab 3</Tab>
+      </Tabs>
+    </div>
   );
 }
-
-export default App;
